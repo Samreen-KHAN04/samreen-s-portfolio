@@ -1,521 +1,433 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
-    <style>
-        /* Professional and elegant color scheme */
-        :root {
-            --bg-color: #616260;  /* Encore (Valspar) as the deep background */
-            --header-bg: #8c7170; /* Rumors (Behr) as a complementary background */
-            --text-color: #f0f4f2; /* A soft, light color for readability */
-            --card-bg: #8c7170; /* Match header for cards */
-            --accent-color: #a7b7ab; /* Quietude (Sherwin Williams) as a fresh accent */
-            --secondary-accent: #a58f8b; /* Cinnamon Slate (Benjamin Moore) for a secondary accent */
-            --border-color: #a58f8b; /* Cinnamon Slate for borders */
-            --subtle-text: #d4d8d6;  /* A slightly darker light color for subtext */
-        }
-    
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Professional and elegant color scheme */
+        :root {
+            --bg-color: #1a202c; /* Dark Charcoal */
+            --header-bg: #2d3748; /* Slightly lighter Charcoal */
+            --text-color: #e2e8f0; /* Light Gray */
+            --card-bg: #2d3748; /* Match header for cards */
+            --accent-color: #c5b07a; /* Muted Gold */
+            --border-color: #4a5568; /* Darker Gray for borders */
+            --subtle-text: #f4f6f9; /* Lighter Gray for subtext */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-        .page-section {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
+        .page-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-        .page-section.active {
-            display: block;
-            opacity: 1;
-        }
+        .page-section.active {
+            display: block;
+            opacity: 1;
+        }
 
-        /* Styling for the animated hamburger menu */
-        #mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-        }
-        #mobile-menu.open {
-            max-height: 500px; /* A large value to ensure the menu fully expands */
-        }
+        /* Styling for the animated hamburger menu */
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        #mobile-menu.open {
+            max-height: 500px; /* A large value to ensure the menu fully expands */
+        }
+    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // JavaScript for handling page transitions and animations
 
-        /* Typing animation styles */
-        .typing-animation::after {
-            content: '|';
-            animation: blink 0.7s infinite;
-        }
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
+        // Function to switch between page sections
+        function setPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            // Re-create lucide icons for the newly active section
+            lucide.createIcons();
+        }
 
-        /* Modal styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .modal-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 1rem;
-            max-width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        .modal-overlay.open .modal-content {
-            transform: scale(1);
-        }
-    </style>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-    <script>
-        // JavaScript for handling page transitions and animations
+        // Function to toggle the mobile menu and its animation
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('open');
+            const menuButton = document.getElementById('mobile-menu-button');
+            menuButton.querySelector('[data-lucide="menu"]').classList.toggle('hidden');
+            menuButton.querySelector('[data-lucide="x"]').classList.toggle('hidden');
+        }
 
-        // Function to switch between page sections
-        function setPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-            // Re-create lucide icons for the newly active section
-            lucide.createIcons();
-        }
+        // Main script to run on document load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set the initial page and theme
+            setPage('home-section');
 
-        // Function to toggle the mobile menu and its animation
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('open');
-            const menuButton = document.getElementById('mobile-menu-button');
-            menuButton.querySelector('[data-lucide="menu"]').classList.toggle('hidden');
-            menuButton.querySelector('[data-lucide="x"]').classList.toggle('hidden');
-        }
+            // Desktop navigation event listeners
+            document.getElementById('nav-home').addEventListener('click', () => setPage('home-section'));
+            document.getElementById('nav-about').addEventListener('click', () => setPage('about-section'));
+            document.getElementById('nav-skills').addEventListener('click', () => setPage('skills-section'));
+            document.getElementById('nav-projects').addEventListener('click', () => setPage('projects-section'));
+            document.getElementById('nav-certificates').addEventListener('click', () => setPage('certificates-section'));
+            document.getElementById('nav-contact').addEventListener('click', () => setPage('contact-section'));
 
-        // Function for the typing animation
-        const typeText = (element, text, speed = 50) => {
-            let i = 0;
-            const typingInterval = setInterval(() => {
-                if (i < text.length) {
-                    element.textContent += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typingInterval);
-                }
-            }, speed);
-        };
+            // Mobile navigation event listeners
+            document.getElementById('mobile-home').addEventListener('click', () => { setPage('home-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-about').addEventListener('click', () => { setPage('about-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-skills').addEventListener('click', () => { setPage('skills-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-projects').addEventListener('click', () => { setPage('projects-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-certificates').addEventListener('click', () => { setPage('certificates-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-contact').addEventListener('click', () => { setPage('contact-section'); toggleMobileMenu(); });
 
-        // Function to open the certificate modal
-        function openCertificateModal(imageUrls) {
-            const modal = document.getElementById('certificate-modal-overlay');
-            const carouselList = document.getElementById('certificate-carousel-list');
+            // Button listeners
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+            document.getElementById('hire-me-btn').addEventListener('click', () => setPage('contact-section'));
+            document.getElementById('internship-btn').addEventListener('click', () => setPage('contact-section'));
+            document.getElementById('get-in-touch-btn').addEventListener('click', () => {
+                setPage('contact-section');
+            });
 
-            // Clear previous images
-            carouselList.innerHTML = '';
+            // Function to open the certificate modal
+            function openModal(imageUrls) {
+                const modal = document.getElementById('certificate-modal');
+                const modalContent = document.getElementById('modal-content');
 
-            // Add new images
-            imageUrls.forEach(url => {
-                const slide = document.createElement('li');
-                slide.classList.add('splide__slide');
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = 'Certificate Image';
-                img.classList.add('w-full', 'h-full', 'object-contain');
-                slide.appendChild(img);
-                carouselList.appendChild(slide);
-            });
+                // Clear previous images
+                modalContent.innerHTML = '';
 
-            modal.classList.add('open');
+                // Split URLs and create image elements
+                const urls = imageUrls.split(',');
+                urls.forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url.trim(); // Use trim() to remove any whitespace
+                    img.alt = 'Certificate Image';
+                    img.classList.add('max-w-full', 'h-auto', 'my-4', 'rounded-lg');
+                    modalContent.appendChild(img);
+                });
 
-            // Initialize Splide.js carousel if it doesn't exist or re-initiate
-            if (document.querySelector('.splide.is-initialized')) {
-                // For existing instances, you can destroy and re-create if needed
-                // Or simply re-mount with new slides
-                document.querySelector('.splide').splide.destroy();
-            }
-            new Splide('#certificate-carousel', {
-                type: 'slide',
-                perPage: 1,
-                arrows: imageUrls.length > 1,
-                pagination: imageUrls.length > 1,
-                heightRatio: 0.7,
-            }).mount();
-        }
+                // Display the modal
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
 
-        // Function to close the certificate modal
-        function closeCertificateModal() {
-            document.getElementById('certificate-modal-overlay').classList.remove('open');
-        }
+            // Function to close the certificate modal
+            function closeModal() {
+                const modal = document.getElementById('certificate-modal');
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
 
-        // Main script to run on document load
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set the initial page and theme
-            setPage('home-section');
+            // Add event listeners to all "View Certificate" buttons
+            document.querySelectorAll('.view-certificate-link').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const imageUrls = event.target.dataset.certificateImages;
+                    openModal(imageUrls);
+                });
+            });
 
-            // Start the typing animation on the home section title
-            const titleElement = document.getElementById('intro-text');
-            const fullText = "A passionate Web Developer creating elegant and functional digital experiences.";
-            titleElement.textContent = ''; // Clear text before typing
-            typeText(titleElement, fullText);
+            // Add event listener to close button
+            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
 
-            // Desktop navigation event listeners
-            document.getElementById('nav-home').addEventListener('click', () => setPage('home-section'));
-            document.getElementById('nav-about').addEventListener('click', () => setPage('about-section'));
-            document.getElementById('nav-skills').addEventListener('click', () => setPage('skills-section'));
-            document.getElementById('nav-projects').addEventListener('click', () => setPage('projects-section'));
-            document.getElementById('nav-certificates').addEventListener('click', () => setPage('certificates-section'));
-            document.getElementById('nav-contact').addEventListener('click', () => setPage('contact-section'));
+            // Close modal when clicking outside
+            document.getElementById('certificate-modal').addEventListener('click', (event) => {
+                if (event.target.id === 'certificate-modal') {
+                    closeModal();
+                }
+            });
 
-            // Mobile navigation event listeners
-            document.getElementById('mobile-home').addEventListener('click', () => { setPage('home-section'); toggleMobileMenu(); });
-            document.getElementById('mobile-about').addEventListener('click', () => { setPage('about-section'); toggleMobileMenu(); });
-            document.getElementById('mobile-skills').addEventListener('click', () => { setPage('skills-section'); toggleMobileMenu(); });
-            document.getElementById('mobile-projects').addEventListener('click', () => { setPage('projects-section'); toggleMobileMenu(); });
-            document.getElementById('mobile-certificates').addEventListener('click', () => { setPage('certificates-section'); toggleMobileMenu(); });
-            document.getElementById('mobile-contact').addEventListener('click', () => { setPage('contact-section'); toggleMobileMenu(); });
 
-            // Button listeners
-            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
-            document.getElementById('hire-me-btn').addEventListener('click', () => setPage('contact-section'));
-            document.getElementById('internship-btn').addEventListener('click', () => setPage('contact-section'));
-            document.getElementById('get-in-touch-btn').addEventListener('click', () => {
-                setPage('contact-section');
-            });
-            
-            // Certificate modal event listeners
-            document.querySelectorAll('.view-certificate-link').forEach(link => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const imagesString = link.getAttribute('data-certificate-images');
-                    const imageUrls = imagesString.split(',');
-                    openCertificateModal(imageUrls);
-                });
-            });
-            document.getElementById('close-modal-btn').addEventListener('click', closeCertificateModal);
-            document.getElementById('certificate-modal-overlay').addEventListener('click', (event) => {
-                if (event.target === event.currentTarget) {
-                    closeCertificateModal();
-                }
-            });
-
-            // Initialize icons
-            lucide.createIcons();
-        });
-    </script>
+            // Initialize icons
+            lucide.createIcons();
+        });
+    </script>
 </head>
-<body class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen font-sans antialiased">
+<body class="min-h-screen font-sans antialiased">
 
-        <header class="bg-[var(--header-bg)] shadow-xl sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-[var(--accent-color)] tracking-wider">
-                SAMREEN BEGUM
-            </div>
-            <nav class="hidden md:flex space-x-10 text-lg">
-                <button id="nav-home" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span>Home</span>
-                </button>
-                <button id="nav-about" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>About</span>
-                </button>
-                <button id="nav-skills" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="bolt" class="w-5 h-5"></i>
-                    <span>Skills</span>
-                </button>
-                <button id="nav-projects" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="code" class="w-5 h-5"></i>
-                    <span>Projects</span>
-                </button>
-                <button id="nav-certificates" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="award" class="w-5 h-5"></i>
-                    <span>Certificates</span>
-                </button>
-                <button id="nav-contact" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="mail" class="w-5 h-5"></i>
-                    <span>Contact</span>
-                </button>
-            </nav>
-                        <div class="flex items-center space-x-4 md:hidden">
-                <button id="mobile-menu-button" class="p-2 rounded-full text-[var(--text-color)] hover:bg-[var(--border-color)] transition-colors duration-300">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
-                    <i data-lucide="x" class="w-6 h-6 hidden"></i>
-                </button>
-            </div>
-            <div id="mobile-menu" class="absolute top-[60px] left-0 w-full bg-[var(--header-bg)] shadow-lg z-40 transition-all duration-500 ease-in-out">
-                <button id="mobile-home" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span>Home</span>
-                </button>
-                <button id="mobile-about" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>About</span>
-                </button>
-                <button id="mobile-skills" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
-                    <i data-lucide="bolt" class="w-5 h-5"></i>
-                    <span>Skills</span>
-                </button>
-                <button id="mobile-projects" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
-                    <i data-lucide="code" class="w-5 h-5"></i>
-                    <span>Projects</span>
-                </button>
-                <button id="mobile-certificates" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
-                    <i data-lucide="award" class="w-5 h-5"></i>
-                    <span>Certificates</span>
-                </button>
-                <button id="mobile-contact" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left">
-                    <i data-lucide="mail" class="w-5 h-5"></i>
-                    <span>Contact</span>
-                </button>
-            </div>
-        </div>
-    </header>
+    <header class="bg-[var(--header-bg)] shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-[var(--accent-color)] tracking-wider">
+                SAMREEN BEGUM
+            </div>
+            <nav class="hidden md:flex space-x-10 text-lg">
+                <button id="nav-home" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Home</span>
+                </button>
+                <button id="nav-about" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>About</span>
+                </button>
+                <button id="nav-skills" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="bolt" class="w-5 h-5"></i>
+                    <span>Skills</span>
+                </button>
+                <button id="nav-projects" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="code" class="w-5 h-5"></i>
+                    <span>Projects</span>
+                </button>
+                <button id="nav-certificates" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Certificates</span>
+                </button>
+                <button id="nav-contact" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    <span>Contact</span>
+                </button>
+            </nav>
+            <div class="flex items-center space-x-4 md:hidden">
+                <button id="mobile-menu-button" class="p-2 rounded-full text-[var(--text-color)] hover:bg-[var(--border-color)] transition-colors duration-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                    <i data-lucide="x" class="w-6 h-6 hidden"></i>
+                </button>
+            </div>
+            <div id="mobile-menu" class="absolute top-[60px] left-0 w-full bg-[var(--header-bg)] shadow-lg z-40 transition-all duration-500 ease-in-out">
+                <button id="mobile-home" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Home</span>
+                </button>
+                <button id="mobile-about" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>About</span>
+                </button>
+                <button id="mobile-skills" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="bolt" class="w-5 h-5"></i>
+                    <span>Skills</span>
+                </button>
+                <button id="mobile-projects" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="code" class="w-5 h-5"></i>
+                    <span>Projects</span>
+                </button>
+                <button id="mobile-certificates" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Certificates</span>
+                </button>
+                <button id="mobile-contact" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    <span>Contact</span>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <main class="container mx-auto p-4 md:p-8 lg:p-12">
-                <section id="home-section" class="page-section active flex flex-col items-center justify-center min-h-[50vh] text-center p-8 bg-[var(--card-bg)] rounded-3xl shadow-2xl">
-            <h1 class="text-5xl md:text-7xl font-bold text-[var(--text-color)] mb-4 tracking-tight">
-                Hi, I'm <span class="text-[var(--accent-color)]">Samreen Begum</span>
-            </h1>
-            <p id="intro-text" class="text-xl md:text-3xl text-[var(--subtle-text)] font-light max-w-3xl mb-6 typing-animation">
-                A passionate Data Analyst transforming raw dataa into actiobaale business insights
-            </p>
-            <div class="flex items-center text-[var(--subtle-text)] space-x-2 mb-10 text-lg">
-                <i data-lucide="map-pin" class="w-6 h-6"></i>
-                <span>Hyderabad, India</span>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4">
-                <button id="hire-me-btn" class="px-8 py-4 bg-[var(--accent-color)] text-[var(--bg-color)] font-bold rounded-full shadow-lg hover:bg-[var(--border-color)] hover:text-[var(--text-color)] transition-colors duration-300 transform hover:scale-105">
-                    Hire Me
-                </button>
-                <button id="internship-btn" class="px-8 py-4 bg-[var(--border-color)] text-[var(--text-color)] font-bold rounded-full shadow-lg hover:bg-[var(--accent-color)] hover:text-[var(--bg-color)] transition-colors duration-300 transform hover:scale-105">
-                    Open to Internship
-                </button>
-            </div>
-        </section>
+    <main class="container mx-auto p-4 md:p-8 lg:p-4">
+        <section id="home-section" class="page-section active flex flex-col items-center justify-center min-h-[50vh] text-center p-8 bg-[var(--card-bg)] rounded-3xl shadow-2xl">
+            <h1 class="text-5xl md:text-7xl font-bold text-[var(--text-color)] mb-4 tracking-tight">
+                Hi, I'm <span class="text-[var(--accent-color)]">Samreen Begum</span>
+            </h1>
+            <p id="intro-text" class="text-xl md:text-3xl text-[var(--subtle-text)] font-light max-w-3xl mb-6">
+                A passionate Data Analyst transforming raw data into actionable business insights.
+            </p>
+            <div class="flex items-center text-[var(--subtle-text)] space-x-2 mb-10 text-lg">
+                <i data-lucide="map-pin" class="w-6 h-6"></i>
+                <span>Hyderabad, India</span>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="hire-me-btn" class="px-8 py-4 bg-[var(--accent-color)] text-[var(--bg-color)] font-bold rounded-full shadow-lg hover:bg-[var(--border-color)] hover:text-[var(--text-color)] transition-colors duration-300 transform hover:scale-105">
+                    Hire Me
+                </button>
+                <button id="internship-btn" class="px-8 py-4 bg-[var(--border-color)] text-[var(--text-color)] font-bold rounded-full shadow-lg hover:bg-[var(--accent-color)] hover:text-[var(--bg-color)] transition-colors duration-300 transform hover:scale-105">
+                    Open to Internship
+                </button>
+            </div>
+        </section>
 
-                <section id="about-section" class="page-section py-8">
-            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
-                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
-                    About Me
-                </h2>
-                <div class="flex flex-col md:flex-row items-center gap-8">
-                    <div class="w-full md:w-1/3 flex justify-center">
-                        <img
-                            src="https://placehold.co/400x400/2d3748/c5b07a?text=Profile"
-                            alt="Profile"
-                            class="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-8 border-[var(--accent-color)] shadow-xl"
-                        />
-                    </div>
-                    <div class="w-full md:w-2/3 text-xl leading-relaxed text-[var(--subtle-text)]">
-                        <p class="mb-6">
-                           I am a passionate Data Analyst with strong skills in collecting, cleaning, and interpreting data to drive business decisions. Proficient in Excel, SQL, Python, and Tableau, I specialize in turning complex datasets into clear, actionable insights. I enjoy identifying trends, creating data visualizations, and developing reports that help organizations improve efficiency and performance. With a problem-solving mindset and attention to detail, I strive to deliver accurate and impactful data solutions.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-                <section id="skills-section" class="page-section py-8">
-            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
-                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
-                    My Skills
-                </h2>
-                <ul class="grid grid-cols-2 md:grid-cols-3 gap-6 text-[var(--subtle-text)] text-lg max-w-4xl mx-auto">
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Modelling</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Analysis</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Python</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Tableau</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Tableau</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Spreadsheets</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Visualization</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Exploratory Data Analysis </span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>problem-solving</span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Team collaboration </span></li>
-                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Time Management</span></li>
+        <section id="about-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    About Me
+                </h2>
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/3 flex justify-center">
+                        <img
+                            src="https://placehold.co/400x400/2d3748/c5b07a?text=Profile"
+                            alt="Profile"
+                            class="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-8 border-[var(--accent-color)] shadow-xl"
+                        />
+                    </div>
+                    <div class="w-full md:w-2/3 text-xl leading-relaxed text-[var(--subtle-text)]">
+                        <p class="mb-6">
+                            I am a passionate Data Analyst with strong skills in collecting, cleaning, and interpreting data to drive business decisions. Proficient in Excel, SQL, Python, and Tableau, I specialize in turning complex datasets into clear, actionable insights. I enjoy identifying trends, creating data visualizations, and developing reports that help organizations improve efficiency and performance. With a problem-solving mindset and attention to detail, I strive to deliver accurate and impactful data solutions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="skills-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    My Skills
+                </h2>
+                <ul class="grid grid-cols-2 md:grid-cols-3 gap-6 text-[var(--subtle-text)] text-lg max-w-4xl mx-auto list-none">
+                    <li class="flex items-center space-x-3"><span>Data Modelling</span></li>
+                    <li class="flex items-center space-x-3"><span>Data Analysis</span></li>
+                    <li class="flex items-center space-x-3"><span>Python</span></li>
+                    <li class="flex items-center space-x-3"><span>Tableau</span></li>
+                    <li class="flex items-center space-x-3"><span>Spreadsheets</span></li>
+                    <li class="flex items-center space-x-3"><span>Data Visualization</span></li>
+                    <li class="flex items-center space-x-3"><span>Exploratory Data Analysis </span></li>
+                    <li class="flex items-center space-x-3"><span>problem-solving</span></li>
+                    <li class="flex items-center space-x-3"><span>Team collaboration </span></li>
+                    <li class="flex items-center space-x-3"><span>Time Management</span></li>
+                </ul>
+            </div>
+        </section>
 
-                </ul>
-            </div>
-        </section>
+        <section id="projects-section" class="page-section py-8">
+            <h2 class="text-4xl font-bold text-[var(--text-color)] text-center mb-8">
+                Featured Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Multi-Currency Expense Tracker</h3>
+                    <p class="text-[var(--subtle-text)] mb-5">Track and analyze expenses across multiple currencies with precision and ease.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Tkinter/PyQt</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">SQLite</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Pandas</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">AI-Driven Change Detection in Remote Sensing</h3>
+                    <p class="text-[var(--subtle-text)] mb-5">This IEEE research project focuses on detecting and analyzing changes in satellite imagery using advanced image processing and machine learning techniques.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">OpenCV</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">NumPy</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Custom AI Agent with Memory</h3>
+                    <p class="text-[var(--subtle-text)] mb-5">An Custom AI agent with long-term memory that can function as a voice/text assistant.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python </span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">OpenAI</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Streamlit</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-                <section id="projects-section" class="page-section py-8">
-            <h2 class="text-4xl font-bold text-[var(--text-color)] text-center mb-8">
-                Featured Projects
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
-                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Interactive AI system for Remote Sensing Change Detection and Analysis</h3>
-                    <p class="text-[var(--subtle-text)] mb-5">Remote sensing-based change detection using Image Differencing, NDVI, and CVA algorithms for accurate land cover analysis.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">kaggle</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">python</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">replit</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
-                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Multicurrency Expence Tracker </h3>
-                    <p class="text-[var(--subtle-text)] mb-5">Track and analyze expenses across multiple currencies with automated SMS-based transaction detection and real-time insights.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Tkinter</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Pandas</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">SQLite</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Currency Converter API</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
-                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Custom AI Agent with Memory</h3>
-                    <p class="text-[var(--subtle-text)] mb-5">An Custom AI agent with long-term memory that can function as a voice/text assistant.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python </span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">OpenAI</span>
-                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Streamlit</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
+        <section id="certificates-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    Certificates
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Science Certification</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Received multiple certifications for a 60-hour Data Science program from Wipro and LearnNex, including a Training Completion Certificate, Internship Completion Certificate, and an Excellence Certificate. The program covered a comprehensive range of data science topics and included an intensive internship focusing on practical application.</p>
+                        <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" data-certificate-images="https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c1.jpg, https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c2.jpg,https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c3.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                    <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Python Essentials 1</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Obtained a Statement of Achievement for completing the Python Essentials 1 course from Cisco Networking Academy and the Python Institute. The credential demonstrates a solid understanding of fundamental Python programming concepts, including syntax, semantics, and algorithmic problem-solving.</p>
+                        <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" data-certificate-images="https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c4.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                    <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Automata Theory</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Successfully completed a course on Automata Theory, earning a Certificate of Achievement from Mind Luster. The course enhanced my foundational understanding of theoretical computer science, including formal languages, computational models, and their applications.</p>
+                        <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" data-certificate-images="https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c5.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                    <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Analytics Job Simulation</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Achieved a Certificate of Completion for the Deloitte Data Analytics Job Simulation from Forage. The program provided practical experience in key data analysis methodologies and business applications within a professional environment.</p>
+                        <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" data-certificate-images="https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/c6.pdf">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                    <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">GenAI powered Data Analytics Job Simulation </h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Completed a GenAI-Powered Data Analytics Job Simulation, receiving a Certificate of Completion from Tata and Forage. The simulation included practical tasks in exploratory data analysis, risk profiling, delinquency prediction with AI, business reporting, and implementing an AI-driven collections strategy.</p>
+                        <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" data-certificate-images="https://github.com/Samreen-KHAN04/samreen-s-portfolio/raw/main/images/TATA_DA_certificate.pdf">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                <section id="certificates-section" class="page-section py-8">
-            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
-                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
-                    Certificates
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Science Certification</h3>
-                        <p class="text-[var(--subtle-text)] mb-5">Received multiple certifications for a 60-hour Data Science program from Wipro and LearnNex, including a Training Completion Certificate, Internship Completion Certificate, and an Excellence Certificate. The program covered a comprehensive range of data science topics and included an intensive internship focusing on practical application.</p>
-                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
-                            data-certificate-images="C:\Users\dell\Downloads\c1.jpg, C:\Users\dell\Downloads\c2.jpg,C:\Users\dell\Downloads\c3.jpg">
-                            View Certificate &rarr;
-                        </button>
-                    </div>
-                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Python Essentials 1</h3>
-                        <p class="text-[var(--subtle-text)] mb-5">Obtained a Statement of Achievement for completing the Python Essentials 1 course from Cisco Networking Academy and the Python Institute. The credential demonstrates a solid understanding of fundamental Python programming concepts, including syntax, semantics, and algorithmic problem-solving..</p>
-                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
-                            data-certificate-images="C:\Users\dell\Downloads\c4.jpg">
-                            View Certificate &rarr;
-                        </button>
-                    </div>
-                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Automata Theory</h3>
-                        <p class="text-[var(--subtle-text)] mb-5">Successfully completed a course on Automata Theory, earning a Certificate of Achievement from Mind Luster. The course enhanced my foundational understanding of theoretical computer science, including formal languages, computational models, and their applications.</p>
-                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
-                            data-certificate-images="C:\Users\dell\Downloads\c5.jpg">
-                            View Certificate &rarr;
-                        </button>
-                    </div>
-                                         <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Analytics Job Simulation</h3>
-                        <p class="text-[var(--subtle-text)] mb-5">Achieved a Certificate of Completion for the Deloitte Data Analytics Job Simulation from Forage. The program provided practical experience in key data analysis methodologies and business applications within a professional environment.</p>
-                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
-                            data-certificate-images="C:\Users\dell\Downloads\c6.pdf">
-                            View Certificate &rarr;
-                        </button>
-                    </div>
-                                         <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">GenAI powered Data Analytics Job Simulation </h3>
-                        <p class="text-[var(--subtle-text)] mb-5">Completed a GenAI-Powered Data Analytics Job Simulation, receiving a Certificate of Completion from Tata and Forage. The simulation included practical tasks in exploratory data analysis, risk profiling, delinquency prediction with AI, business reporting, and implementing an AI-driven collections strategy.</p>
-                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
-                            data-certificate-images="C:\Users\dell\Downloads\TATA DA certificate.pdf">
-                            View Certificate &rarr;
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <section id="contact-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl max-w-4xl mx-auto text-center border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-6">
+                    Let's Connect
+                </h2>
+                <p class="text-center text-[var(--subtle-text)] mb-10 text-xl">
+                    I'm always open to new opportunities and collaborations. Feel free to reach out to me on these platforms.
+                </p>
+                <div class="flex justify-center space-x-10 mb-10">
+                    <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="github" class="w-12 h-12"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="linkedin" class="w-12 h-12"></i>
+                    </a>
+                    <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="mail" class="w-12 h-12"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-                <section id="contact-section" class="page-section py-8">
-            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl max-w-4xl mx-auto text-center border-t-4 border-[var(--accent-color)]">
-                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-6">
-                    Let's Connect
-                </h2>
-                <p class="text-center text-[var(--subtle-text)] mb-10 text-xl">
-                    I'm always open to new opportunities and collaborations. Feel free to reach out to me on these platforms.
-                </p>
-                <div class="flex justify-center space-x-10 mb-10">
-                    <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="github" class="w-12 h-12"></i>
-                    </a>
-                    <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="linkedin" class="w-12 h-12"></i>
-                    </a>
-                    <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="mail" class="w-12 h-12"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
+    <footer class="bg-[var(--header-bg)] text-[var(--subtle-text)] py-8 text-center">
+        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
+            <p>&copy; 2025 Samreen Begum. All rights reserved.</p>
+            <div class="flex space-x-6">
+                <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                </a>
+                <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
 
-        <footer class="bg-[var(--header-bg)] text-[var(--subtle-text)] py-8 text-center">
-        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
-            <p>&copy; 2025 Samreen Begum. All rights reserved.</p>
-            <div class="flex space-x-6">
-                <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
-                    <i data-lucide="github" class="w-6 h-6"></i>
-                </a>
-                <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
-                    <i data-lucide="linkedin" class="w-6 h-6"></i>
-                </a>
-                <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
-                    <i data-lucide="mail" class="w-6 h-6"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
+    <div id="certificate-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-75">
+        <div class="relative max-w-5xl mx-auto p-8 bg-[var(--card-bg)] rounded-xl shadow-2xl">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-[var(--text-color)] hover:text-[var(--accent-color)]">
+                <i data-lucide="x-circle" class="w-8 h-8"></i>
+            </button>
+            <div id="modal-content" class="flex flex-col items-center">
+                </div>
+        </div>
+    </div>
 
-        <div id="certificate-modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors z-50">
-                <i data-lucide="x" class="w-8 h-8"></i>
-            </button>
-            <div id="certificate-carousel" class="splide" aria-label="Certificate Images">
-                <div class="splide__track">
-                    <ul id="certificate-carousel-list" class="splide__list">
-                                            </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
