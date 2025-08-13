@@ -1,350 +1,521 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        .page-section {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .page-section.active {
-            display: block;
-            opacity: 1;
-        }
-    </style>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-      function setPage(pageId) {
-        document.querySelectorAll('.page-section').forEach(section => {
-          section.classList.remove('active');
-        });
-        document.getElementById(pageId).classList.add('active');
-        lucide.createIcons();
-      }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <style>
+        /* Professional and elegant color scheme */
+        :root {
+            --bg-color: #616260;  /* Encore (Valspar) as the deep background */
+            --header-bg: #8c7170; /* Rumors (Behr) as a complementary background */
+            --text-color: #f0f4f2; /* A soft, light color for readability */
+            --card-bg: #8c7170; /* Match header for cards */
+            --accent-color: #a7b7ab; /* Quietude (Sherwin Williams) as a fresh accent */
+            --secondary-accent: #a58f8b; /* Cinnamon Slate (Benjamin Moore) for a secondary accent */
+            --border-color: #a58f8b; /* Cinnamon Slate for borders */
+            --subtle-text: #d4d8d6;  /* A slightly darker light color for subtext */
+        }
+    
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-      function toggleMobileMenu() {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-      }
+        .page-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
 
-      document.addEventListener('DOMContentLoaded', () => {
-        setPage('home-section');
+        .page-section.active {
+            display: block;
+            opacity: 1;
+        }
 
-        document.getElementById('nav-home').addEventListener('click', () => setPage('home-section'));
-        document.getElementById('nav-about').addEventListener('click', () => setPage('about-section'));
-        document.getElementById('nav-skills').addEventListener('click', () => setPage('skills-section'));
-        document.getElementById('nav-projects').addEventListener('click', () => setPage('projects-section'));
-        document.getElementById('nav-certificates').addEventListener('click', () => setPage('certificates-section'));
-        document.getElementById('nav-contact').addEventListener('click', () => setPage('contact-section'));
+        /* Styling for the animated hamburger menu */
+        #mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        #mobile-menu.open {
+            max-height: 500px; /* A large value to ensure the menu fully expands */
+        }
 
-        document.getElementById('mobile-home').addEventListener('click', () => { setPage('home-section'); toggleMobileMenu(); });
-        document.getElementById('mobile-about').addEventListener('click', () => { setPage('about-section'); toggleMobileMenu(); });
-        document.getElementById('mobile-skills').addEventListener('click', () => { setPage('skills-section'); toggleMobileMenu(); });
-        document.getElementById('mobile-projects').addEventListener('click', () => { setPage('projects-section'); toggleMobileMenu(); });
-        document.getElementById('mobile-certificates').addEventListener('click', () => { setPage('certificates-section'); toggleMobileMenu(); });
-        document.getElementById('mobile-contact').addEventListener('click', () => { setPage('contact-section'); toggleMobileMenu(); });
+        /* Typing animation styles */
+        .typing-animation::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
 
-        document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.open .modal-content {
+            transform: scale(1);
+        }
+    </style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script>
+        // JavaScript for handling page transitions and animations
 
-        // Add a click listener for the "Get in Touch" button on the home page
-        document.getElementById('get-in-touch-btn').addEventListener('click', () => {
-          setPage('contact-section');
-        });
+        // Function to switch between page sections
+        function setPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            // Re-create lucide icons for the newly active section
+            lucide.createIcons();
+        }
 
-        // Initialize icons
-        lucide.createIcons();
-      });
-    </script>
+        // Function to toggle the mobile menu and its animation
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('open');
+            const menuButton = document.getElementById('mobile-menu-button');
+            menuButton.querySelector('[data-lucide="menu"]').classList.toggle('hidden');
+            menuButton.querySelector('[data-lucide="x"]').classList.toggle('hidden');
+        }
+
+        // Function for the typing animation
+        const typeText = (element, text, speed = 50) => {
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, speed);
+        };
+
+        // Function to open the certificate modal
+        function openCertificateModal(imageUrls) {
+            const modal = document.getElementById('certificate-modal-overlay');
+            const carouselList = document.getElementById('certificate-carousel-list');
+
+            // Clear previous images
+            carouselList.innerHTML = '';
+
+            // Add new images
+            imageUrls.forEach(url => {
+                const slide = document.createElement('li');
+                slide.classList.add('splide__slide');
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Certificate Image';
+                img.classList.add('w-full', 'h-full', 'object-contain');
+                slide.appendChild(img);
+                carouselList.appendChild(slide);
+            });
+
+            modal.classList.add('open');
+
+            // Initialize Splide.js carousel if it doesn't exist or re-initiate
+            if (document.querySelector('.splide.is-initialized')) {
+                // For existing instances, you can destroy and re-create if needed
+                // Or simply re-mount with new slides
+                document.querySelector('.splide').splide.destroy();
+            }
+            new Splide('#certificate-carousel', {
+                type: 'slide',
+                perPage: 1,
+                arrows: imageUrls.length > 1,
+                pagination: imageUrls.length > 1,
+                heightRatio: 0.7,
+            }).mount();
+        }
+
+        // Function to close the certificate modal
+        function closeCertificateModal() {
+            document.getElementById('certificate-modal-overlay').classList.remove('open');
+        }
+
+        // Main script to run on document load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set the initial page and theme
+            setPage('home-section');
+
+            // Start the typing animation on the home section title
+            const titleElement = document.getElementById('intro-text');
+            const fullText = "A passionate Web Developer creating elegant and functional digital experiences.";
+            titleElement.textContent = ''; // Clear text before typing
+            typeText(titleElement, fullText);
+
+            // Desktop navigation event listeners
+            document.getElementById('nav-home').addEventListener('click', () => setPage('home-section'));
+            document.getElementById('nav-about').addEventListener('click', () => setPage('about-section'));
+            document.getElementById('nav-skills').addEventListener('click', () => setPage('skills-section'));
+            document.getElementById('nav-projects').addEventListener('click', () => setPage('projects-section'));
+            document.getElementById('nav-certificates').addEventListener('click', () => setPage('certificates-section'));
+            document.getElementById('nav-contact').addEventListener('click', () => setPage('contact-section'));
+
+            // Mobile navigation event listeners
+            document.getElementById('mobile-home').addEventListener('click', () => { setPage('home-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-about').addEventListener('click', () => { setPage('about-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-skills').addEventListener('click', () => { setPage('skills-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-projects').addEventListener('click', () => { setPage('projects-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-certificates').addEventListener('click', () => { setPage('certificates-section'); toggleMobileMenu(); });
+            document.getElementById('mobile-contact').addEventListener('click', () => { setPage('contact-section'); toggleMobileMenu(); });
+
+            // Button listeners
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+            document.getElementById('hire-me-btn').addEventListener('click', () => setPage('contact-section'));
+            document.getElementById('internship-btn').addEventListener('click', () => setPage('contact-section'));
+            document.getElementById('get-in-touch-btn').addEventListener('click', () => {
+                setPage('contact-section');
+            });
+            
+            // Certificate modal event listeners
+            document.querySelectorAll('.view-certificate-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const imagesString = link.getAttribute('data-certificate-images');
+                    const imageUrls = imagesString.split(',');
+                    openCertificateModal(imageUrls);
+                });
+            });
+            document.getElementById('close-modal-btn').addEventListener('click', closeCertificateModal);
+            document.getElementById('certificate-modal-overlay').addEventListener('click', (event) => {
+                if (event.target === event.currentTarget) {
+                    closeCertificateModal();
+                }
+            });
+
+            // Initialize icons
+            lucide.createIcons();
+        });
+    </script>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased">
+<body class="bg-[var(--bg-color)] text-[var(--text-color)] min-h-screen font-sans antialiased">
 
-    <!-- Header component with navigation -->
-    <header class="bg-gray-900 shadow-xl sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="text-2xl font-bold text-yellow-400 tracking-wider">
-                SYEDA MADIHA JEELANI
-            </div>
-            <nav class="hidden md:flex space-x-10 text-lg">
-                <button id="nav-home" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span>Home</span>
-                </button>
-                <button id="nav-about" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>About</span>
-                </button>
-                <button id="nav-skills" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="bolt" class="w-5 h-5"></i>
-                    <span>Skills</span>
-                </button>
-                <button id="nav-projects" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="code" class="w-5 h-5"></i>
-                    <span>Projects</span>
-                </button>
-                <button id="nav-certificates" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="award" class="w-5 h-5"></i>
-                    <span>Certificates</span>
-                </button>
-                <button id="nav-contact" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-110">
-                    <i data-lucide="mail" class="w-5 h-5"></i>
-                    <span>Contact</span>
-                </button>
-            </nav>
-            <!-- Mobile Navigation -->
-            <div class="md:hidden">
-              <button id="mobile-menu-button" class="text-gray-300 hover:text-yellow-400 transition-colors duration-300">
-                <i data-lucide="menu" class="w-6 h-6"></i>
-              </button>
-              <div id="mobile-menu" class="hidden absolute right-0 mt-2 w-48 bg-gray-900 rounded-md shadow-lg py-2 z-50">
-                <button id="mobile-home" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="home" class="w-5 h-5"></i>
-                    <span>Home</span>
-                </button>
-                <button id="mobile-about" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>About</span>
-                </button>
-                <button id="mobile-skills" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="bolt" class="w-5 h-5"></i>
-                    <span>Skills</span>
-                </button>
-                <button id="mobile-projects" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="code" class="w-5 h-5"></i>
-                    <span>Projects</span>
-                </button>
-                <button id="mobile-certificates" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="award" class="w-5 h-5"></i>
-                    <span>Certificates</span>
-                </button>
-                <button id="mobile-contact" class="flex items-center space-x-2 text-gray-300 hover:text-yellow-400 transition-colors duration-300 w-full px-4 py-3 text-left">
-                    <i data-lucide="mail" class="w-5 h-5"></i>
-                    <span>Contact</span>
-                </button>
-              </div>
-            </div>
-        </div>
-    </header>
+        <header class="bg-[var(--header-bg)] shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-[var(--accent-color)] tracking-wider">
+                SAMREEN BEGUM
+            </div>
+            <nav class="hidden md:flex space-x-10 text-lg">
+                <button id="nav-home" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Home</span>
+                </button>
+                <button id="nav-about" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>About</span>
+                </button>
+                <button id="nav-skills" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="bolt" class="w-5 h-5"></i>
+                    <span>Skills</span>
+                </button>
+                <button id="nav-projects" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="code" class="w-5 h-5"></i>
+                    <span>Projects</span>
+                </button>
+                <button id="nav-certificates" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Certificates</span>
+                </button>
+                <button id="nav-contact" class="flex items-center space-x-2 text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-110">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    <span>Contact</span>
+                </button>
+            </nav>
+                        <div class="flex items-center space-x-4 md:hidden">
+                <button id="mobile-menu-button" class="p-2 rounded-full text-[var(--text-color)] hover:bg-[var(--border-color)] transition-colors duration-300">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                    <i data-lucide="x" class="w-6 h-6 hidden"></i>
+                </button>
+            </div>
+            <div id="mobile-menu" class="absolute top-[60px] left-0 w-full bg-[var(--header-bg)] shadow-lg z-40 transition-all duration-500 ease-in-out">
+                <button id="mobile-home" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span>Home</span>
+                </button>
+                <button id="mobile-about" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>About</span>
+                </button>
+                <button id="mobile-skills" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="bolt" class="w-5 h-5"></i>
+                    <span>Skills</span>
+                </button>
+                <button id="mobile-projects" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="code" class="w-5 h-5"></i>
+                    <span>Projects</span>
+                </button>
+                <button id="mobile-certificates" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left border-b border-[var(--border-color)]">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                    <span>Certificates</span>
+                </button>
+                <button id="mobile-contact" class="flex items-center space-x-2 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors duration-300 w-full px-6 py-4 text-left">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                    <span>Contact</span>
+                </button>
+            </div>
+        </div>
+    </header>
 
-    <main class="container mx-auto p-4 md:p-12 lg:p-16">
-        <!-- Home/Hero section -->
-        <section id="home-section" class="page-section active flex flex-col items-center justify-center min-h-[70vh] text-center p-8 bg-gray-900 rounded-3xl shadow-2xl">
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
-                Hi, I'm <span class="text-yellow-400">Syeda Madiha Jeelani</span>
-            </h1>
-            <p class="text-xl md:text-3xl text-gray-300 font-light max-w-3xl mb-10">
-                A passionate Web Developer creating elegant and functional digital experiences.
-            </p>
-            <button id="get-in-touch-btn" class="px-8 py-4 bg-yellow-500 text-gray-900 font-bold rounded-full shadow-lg hover:bg-yellow-400 transition-colors duration-300 transform hover:scale-105">
-                Let's Connect!
-            </button>
-        </section>
+    <main class="container mx-auto p-4 md:p-8 lg:p-12">
+                <section id="home-section" class="page-section active flex flex-col items-center justify-center min-h-[50vh] text-center p-8 bg-[var(--card-bg)] rounded-3xl shadow-2xl">
+            <h1 class="text-5xl md:text-7xl font-bold text-[var(--text-color)] mb-4 tracking-tight">
+                Hi, I'm <span class="text-[var(--accent-color)]">Samreen Begum</span>
+            </h1>
+            <p id="intro-text" class="text-xl md:text-3xl text-[var(--subtle-text)] font-light max-w-3xl mb-6 typing-animation">
+                A passionate Data Analyst transforming raw dataa into actiobaale business insights
+            </p>
+            <div class="flex items-center text-[var(--subtle-text)] space-x-2 mb-10 text-lg">
+                <i data-lucide="map-pin" class="w-6 h-6"></i>
+                <span>Hyderabad, India</span>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="hire-me-btn" class="px-8 py-4 bg-[var(--accent-color)] text-[var(--bg-color)] font-bold rounded-full shadow-lg hover:bg-[var(--border-color)] hover:text-[var(--text-color)] transition-colors duration-300 transform hover:scale-105">
+                    Hire Me
+                </button>
+                <button id="internship-btn" class="px-8 py-4 bg-[var(--border-color)] text-[var(--text-color)] font-bold rounded-full shadow-lg hover:bg-[var(--accent-color)] hover:text-[var(--bg-color)] transition-colors duration-300 transform hover:scale-105">
+                    Open to Internship
+                </button>
+            </div>
+        </section>
 
-        <!-- About section -->
-        <section id="about-section" class="page-section py-20">
-            <div class="bg-gray-900 p-12 rounded-3xl shadow-2xl border-t-4 border-yellow-400">
-                <h2 class="text-4xl font-bold text-white mb-8 text-center">
-                    About Me
-                </h2>
-                <div class="flex flex-col md:flex-row items-center gap-12">
-                    <div class="w-full md:w-1/3 flex justify-center">
-                        <img
-                            src="https://placehold.co/400x400/1f2937/d1d5db?text=Profile"
-                            alt="Profile"
-                            class="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-8 border-yellow-400 shadow-xl"
-                        />
-                    </div>
-                    <div class="w-full md:w-2/3 text-xl leading-relaxed text-gray-300">
-                        <p class="mb-6">
-                            I am a web developer with a passion for building robust and scalable web applications. My expertise lies in front-end technologies like React, JavaScript, and Tailwind CSS, where I focus on creating intuitive and engaging user experiences. I love solving complex problems and continuously learning new technologies to stay at the forefront of the industry.
-                        </p>
-                        <p>
-                            In my free time, I enjoy contributing to open-source projects, reading tech blogs, and hiking. I believe that good design and clean code are the keys to a successful project.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Skills section -->
-        <section id="skills-section" class="page-section py-20">
-            <div class="bg-gray-900 p-12 rounded-3xl shadow-2xl border-t-4 border-yellow-400">
-                <h2 class="text-4xl font-bold text-white mb-8 text-center">
-                    My Skills
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-8">
-                    <!-- Skills Card 1: Languages -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-yellow-500 transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-4">Languages</h3>
-                        <ul class="list-none space-y-3 text-gray-300">
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>JavaScript (ES6+)</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>TypeScript</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Python</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>HTML5</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>CSS3</span></li>
-                        </ul>
-                    </div>
-                    <!-- Skills Card 2: Frameworks & Libraries -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-yellow-500 transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-4">Frameworks & Libraries</h3>
-                        <ul class="list-none space-y-3 text-gray-300">
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>React</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Next.js</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Node.js</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Tailwind CSS</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Express.js</span></li>
-                        </ul>
-                    </div>
-                    <!-- Skills Card 3: Tools & Technologies -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-yellow-500 transition-shadow duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-4">Tools & Technologies</h3>
-                        <ul class="list-none space-y-3 text-gray-300">
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Git & GitHub</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Firebase</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>MongoDB</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Webpack</span></li>
-                            <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-yellow-400"></i><span>Vite</span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <section id="about-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    About Me
+                </h2>
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="w-full md:w-1/3 flex justify-center">
+                        <img
+                            src="https://placehold.co/400x400/2d3748/c5b07a?text=Profile"
+                            alt="Profile"
+                            class="rounded-full w-64 h-64 md:w-80 md:h-80 object-cover border-8 border-[var(--accent-color)] shadow-xl"
+                        />
+                    </div>
+                    <div class="w-full md:w-2/3 text-xl leading-relaxed text-[var(--subtle-text)]">
+                        <p class="mb-6">
+                           I am a passionate Data Analyst with strong skills in collecting, cleaning, and interpreting data to drive business decisions. Proficient in Excel, SQL, Python, and Tableau, I specialize in turning complex datasets into clear, actionable insights. I enjoy identifying trends, creating data visualizations, and developing reports that help organizations improve efficiency and performance. With a problem-solving mindset and attention to detail, I strive to deliver accurate and impactful data solutions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+                <section id="skills-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    My Skills
+                </h2>
+                <ul class="grid grid-cols-2 md:grid-cols-3 gap-6 text-[var(--subtle-text)] text-lg max-w-4xl mx-auto">
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Modelling</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Analysis</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Python</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Tableau</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Tableau</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Spreadsheets</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Data Visualization</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Exploratory Data Analysis </span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>problem-solving</span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Team collaboration </span></li>
+                    <li class="flex items-center space-x-3"><i data-lucide="check-circle" class="text-[var(--accent-color)]"></i><span>Time Management</span></li>
 
-        <!-- Projects section -->
-        <section id="projects-section" class="page-section py-20">
-            <h2 class="text-4xl font-bold text-white text-center mb-12">
-                Featured Projects
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Project Card 1 -->
-                <div class="bg-gray-900 p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-gray-800 hover:border-yellow-400">
-                    <h3 class="text-2xl font-bold text-yellow-400 mb-3">Project Alpha</h3>
-                    <p class="text-gray-300 mb-5">A dynamic web application built with React and a REST API. Features include user authentication and data visualization.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">React</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Tailwind CSS</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Node.js</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-                <!-- Project Card 2 -->
-                <div class="bg-gray-900 p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-gray-800 hover:border-yellow-400">
-                    <h3 class="text-2xl font-bold text-yellow-400 mb-3">Project Beta</h3>
-                    <p class="text-gray-300 mb-5">An e-commerce storefront created using a headless CMS and Next.js. Optimized for performance and SEO.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Next.js</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">GraphQL</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Tailwind CSS</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-                <!-- Project Card 3 -->
-                <div class="bg-gray-900 p-8 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-gray-800 hover:border-yellow-400">
-                    <h3 class="text-2xl font-bold text-yellow-400 mb-3">Project Gamma</h3>
-                    <p class="text-gray-300 mb-5">A mobile-first progressive web app (PWA) for managing tasks. It works offline and syncs data when connected.</p>
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">React</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">PWA</span>
-                        <span class="bg-gray-700 text-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Firebase</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium text-lg flex items-center space-x-2">
-                        <span>View Project</span>
-                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
+                </ul>
+            </div>
+        </section>
 
-        <!-- Certificates section -->
-        <section id="certificates-section" class="page-section py-20">
-            <div class="bg-gray-900 p-12 rounded-3xl shadow-2xl border-t-4 border-yellow-400">
-                <h2 class="text-4xl font-bold text-white mb-8 text-center">
-                    Certificates
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-8">
-                    <!-- Certificate Card 1 -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 hover:border-yellow-400 transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-3">React Nanodegree</h3>
-                        <p class="text-gray-300 mb-5">Certificate of completion for the React Developer Nanodegree program from Udacity.</p>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium">
-                            View Certificate &rarr;
-                        </a>
-                    </div>
-                    <!-- Certificate Card 2 -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 hover:border-yellow-400 transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-3">Google Cloud Associate Cloud Engineer</h3>
-                        <p class="text-gray-300 mb-5">Certification demonstrating proficiency in foundational Google Cloud skills and concepts.</p>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium">
-                            View Certificate &rarr;
-                        </a>
-                    </div>
-                    <!-- Certificate Card 3 -->
-                    <div class="bg-gray-800 p-8 rounded-2xl shadow-xl border border-gray-700 hover:border-yellow-400 transition-colors duration-300">
-                        <h3 class="text-2xl font-bold text-yellow-400 mb-3">Front-End Web Development</h3>
-                        <p class="text-gray-300 mb-5">A comprehensive certificate in Front-End Web Development from Coursera.</p>
-                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-yellow-400 hover:text-yellow-300 font-medium">
-                            View Certificate &rarr;
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <section id="projects-section" class="page-section py-8">
+            <h2 class="text-4xl font-bold text-[var(--text-color)] text-center mb-8">
+                Featured Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Interactive AI system for Remote Sensing Change Detection and Analysis</h3>
+                    <p class="text-[var(--subtle-text)] mb-5">Remote sensing-based change detection using Image Differencing, NDVI, and CVA algorithms for accurate land cover analysis.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">kaggle</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">python</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">replit</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Multicurrency Expence Tracker </h3>
+                    <p class="text-[var(--subtle-text)] mb-5">Track and analyze expenses across multiple currencies with automated SMS-based transaction detection and real-time insights.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Tkinter</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Pandas</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">SQLite</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Currency Converter API</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                                <div class="bg-[var(--card-bg)] p-6 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300 border border-[var(--border-color)] hover:border-[var(--accent-color)]">
+                    <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Custom AI Agent with Memory</h3>
+                    <p class="text-[var(--subtle-text)] mb-5">An Custom AI agent with long-term memory that can function as a voice/text assistant.</p>
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Python </span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">OpenAI</span>
+                        <span class="bg-[var(--border-color)] text-[var(--accent-color)] text-sm font-semibold px-3 py-1 rounded-full">Streamlit</span>
+                    </div>
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium text-lg flex items-center space-x-2">
+                        <span>View Project</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- Contact section -->
-        <section id="contact-section" class="page-section py-20">
-            <div class="bg-gray-900 p-12 rounded-3xl shadow-2xl max-w-4xl mx-auto text-center border-t-4 border-yellow-400">
-                <h2 class="text-4xl font-bold text-white mb-6">
-                    Let's Connect
-                </h2>
-                <p class="text-center text-gray-300 mb-10 text-xl">
-                    I'm always open to new opportunities and collaborations. You can find me on these platforms.
-                </p>
-                <div class="flex justify-center space-x-10">
-                    <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="github" class="w-12 h-12"></i>
-                    </a>
-                    <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="linkedin" class="w-12 h-12"></i>
-                    </a>
-                    <a href="mailto:youremail@example.com" aria-label="Email" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 transform hover:scale-125">
-                        <i data-lucide="mail" class="w-12 h-12"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-    </main>
+                <section id="certificates-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-8 text-center">
+                    Certificates
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Science Certification</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Received multiple certifications for a 60-hour Data Science program from Wipro and LearnNex, including a Training Completion Certificate, Internship Completion Certificate, and an Excellence Certificate. The program covered a comprehensive range of data science topics and included an intensive internship focusing on practical application.</p>
+                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
+                            data-certificate-images="C:\Users\dell\Downloads\c1.jpg, C:\Users\dell\Downloads\c2.jpg,C:\Users\dell\Downloads\c3.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Python Essentials 1</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Obtained a Statement of Achievement for completing the Python Essentials 1 course from Cisco Networking Academy and the Python Institute. The credential demonstrates a solid understanding of fundamental Python programming concepts, including syntax, semantics, and algorithmic problem-solving..</p>
+                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
+                            data-certificate-images="C:\Users\dell\Downloads\c4.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                                        <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Automata Theory</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Successfully completed a course on Automata Theory, earning a Certificate of Achievement from Mind Luster. The course enhanced my foundational understanding of theoretical computer science, including formal languages, computational models, and their applications.</p>
+                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
+                            data-certificate-images="C:\Users\dell\Downloads\c5.jpg">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                                         <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">Data Analytics Job Simulation</h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Achieved a Certificate of Completion for the Deloitte Data Analytics Job Simulation from Forage. The program provided practical experience in key data analysis methodologies and business applications within a professional environment.</p>
+                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
+                            data-certificate-images="C:\Users\dell\Downloads\c6.pdf">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                                         <div class="bg-[var(--header-bg)] p-6 rounded-2xl shadow-xl border border-[var(--border-color)] hover:border-[var(--accent-color)] transition-colors duration-300">
+                        <h3 class="text-2xl font-bold text-[var(--accent-color)] mb-3">GenAI powered Data Analytics Job Simulation </h3>
+                        <p class="text-[var(--subtle-text)] mb-5">Completed a GenAI-Powered Data Analytics Job Simulation, receiving a Certificate of Completion from Tata and Forage. The simulation included practical tasks in exploratory data analysis, risk profiling, delinquency prediction with AI, business reporting, and implementing an AI-driven collections strategy.</p>
+                                                <button class="view-certificate-link text-[var(--accent-color)] hover:text-[var(--subtle-text)] font-medium" 
+                            data-certificate-images="C:\Users\dell\Downloads\TATA DA certificate.pdf">
+                            View Certificate &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- Footer component -->
-    <footer class="bg-gray-900 text-gray-400 py-8 text-center">
-        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
-            <p>&copy; 2025 Syeda Madiha Jeelani. All rights reserved.</p>
-            <div class="flex space-x-6">
-                <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300">
-                    <i data-lucide="github" class="w-6 h-6"></i>
-                </a>
-                <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300">
-                    <i data-lucide="linkedin" class="w-6 h-6"></i>
-                </a>
-                <a href="mailto:youremail@example.com" aria-label="Email" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300">
-                    <i data-lucide="mail" class="w-6 h-6"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
+                <section id="contact-section" class="page-section py-8">
+            <div class="bg-[var(--card-bg)] p-8 rounded-3xl shadow-2xl max-w-4xl mx-auto text-center border-t-4 border-[var(--accent-color)]">
+                <h2 class="text-4xl font-bold text-[var(--text-color)] mb-6">
+                    Let's Connect
+                </h2>
+                <p class="text-center text-[var(--subtle-text)] mb-10 text-xl">
+                    I'm always open to new opportunities and collaborations. Feel free to reach out to me on these platforms.
+                </p>
+                <div class="flex justify-center space-x-10 mb-10">
+                    <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="github" class="w-12 h-12"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="linkedin" class="w-12 h-12"></i>
+                    </a>
+                    <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300 transform hover:scale-125">
+                        <i data-lucide="mail" class="w-12 h-12"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+        <footer class="bg-[var(--header-bg)] text-[var(--subtle-text)] py-8 text-center">
+        <div class="container mx-auto flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-12">
+            <p>&copy; 2025 Samreen Begum. All rights reserved.</p>
+            <div class="flex space-x-6">
+                <a href="https://github.com/Samreen-KHAN04" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="github" class="w-6 h-6"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/samreen-begum-b94a83312" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="linkedin" class="w-6 h-6"></i>
+                </a>
+                <a href="mailto:samreen04begum@gmail.com" aria-label="Email" class="text-[var(--subtle-text)] hover:text-[var(--accent-color)] transition-colors duration-300">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+        <div id="certificate-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-[var(--text-color)] hover:text-[var(--accent-color)] transition-colors z-50">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <div id="certificate-carousel" class="splide" aria-label="Certificate Images">
+                <div class="splide__track">
+                    <ul id="certificate-carousel-list" class="splide__list">
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
